@@ -6,9 +6,9 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <unistd.h>
 
 using namespace std;
-
 
 int convertToInteger(string val)
 {
@@ -198,179 +198,184 @@ int main()
     while (1)
     {
         client_socket = accept(server_socket, NULL, NULL);
-
-        char recieve_choiceC[1];
-        recv(client_socket, &recieve_choiceC, sizeof(recieve_choiceC), 0);
-        cout << "Client selected option = " << recieve_choiceC[0] << endl;
-        string recieve_choiceS;
-        for (int i = 0; i < 1; i++)
+        pid_t pid1 = fork();
+        if (pid1 == 0)
         {
-            recieve_choiceS += recieve_choiceC[i];
-        }
 
-        if (recieve_choiceS == "1")
-        {
-            char r1ValueC1[200];
-            recv(client_socket, &r1ValueC1, sizeof(r1ValueC1), 0);
-            char r1ValueC2[200];
-            recv(client_socket, &r1ValueC2, sizeof(r1ValueC2), 0);
-            string combinedSendS1;
-            for (int i = 0; i < strlen(r1ValueC1); i++)
+            char recieve_choiceC[1];
+            recv(client_socket, &recieve_choiceC, sizeof(recieve_choiceC), 0);
+            cout << "Client selected option = " << recieve_choiceC[0] << endl;
+            string recieve_choiceS;
+            for (int i = 0; i < 1; i++)
             {
-                combinedSendS1 += r1ValueC1[i];
+                recieve_choiceS += recieve_choiceC[i];
             }
-            for (int i = 0; i < strlen(r1ValueC2); i++)
-            {
-                combinedSendS1 += r1ValueC2[i];
-            }
-            char combinedSendC1[combinedSendS1.length() + 1];
-            int i = 0;
-            for (; i < combinedSendS1.length(); i++)
-            {
-                combinedSendC1[i] = combinedSendS1[i];
-            }
-            combinedSendC1[i] = '\0';
-            send(client_socket, combinedSendC1, sizeof(combinedSendC1), 0);
-        }
-        else if (recieve_choiceS == "2")
-        {
-            char r2ValueS1[200];
-            recv(client_socket, &r2ValueS1, sizeof(r2ValueS1), 0);
 
-            char r2ValueC1[1];
-            recv(client_socket, &r2ValueC1, sizeof(r2ValueC1), 0);
-
-            int found = -1;
-            for (int i = 0; i < strlen(r2ValueS1); i++)
+            if (recieve_choiceS == "1")
             {
-                if (r2ValueC1[0] == r2ValueS1[i])
+                char r1ValueC1[200];
+                recv(client_socket, &r1ValueC1, sizeof(r1ValueC1), 0);
+                char r1ValueC2[200];
+                recv(client_socket, &r1ValueC2, sizeof(r1ValueC2), 0);
+                string combinedSendS1;
+                for (int i = 0; i < strlen(r1ValueC1); i++)
                 {
-                    found = i;
-                    found++;
-                    break;
+                    combinedSendS1 += r1ValueC1[i];
                 }
+                for (int i = 0; i < strlen(r1ValueC2); i++)
+                {
+                    combinedSendS1 += r1ValueC2[i];
+                }
+                char combinedSendC1[combinedSendS1.length() + 1];
+                int i = 0;
+                for (; i < combinedSendS1.length(); i++)
+                {
+                    combinedSendC1[i] = combinedSendS1[i];
+                }
+                combinedSendC1[i] = '\0';
+                cout << combinedSendC1;
+                send(client_socket, combinedSendC1, sizeof(combinedSendC1), 0);
             }
-            string indexSend1 = to_string(found);
-            int j = 0;
-            char indexSend2[indexSend1.length() + 1];
-            for (; j < indexSend1.length(); j++)
+            else if (recieve_choiceS == "2")
             {
-                indexSend2[j] = indexSend1[j];
-            }
-            indexSend2[j] = '\0';
-            send(client_socket, indexSend2, sizeof(indexSend2), 0);
-        }
-        else if (recieve_choiceS == "3")
-        {
-            char r3ValueC1[200];
-            recv(client_socket, &r3ValueC1, sizeof(r3ValueC1), 0);
-            char r3ValueC2[200];
-            recv(client_socket, &r3ValueC2, sizeof(r3ValueC2), 0);
-            string valueIsTrue = "True";
-            int k = 0;
-            char cValueIsTrue[valueIsTrue.length() + 1];
+                char r2ValueS1[200];
+                recv(client_socket, &r2ValueS1, sizeof(r2ValueS1), 0);
 
-            string valueIsFalse = "False";
-            int l = 0;
-            char cValueIsFalse[valueIsFalse.length() + 1];
-            if (strlen(r3ValueC1) != strlen(r3ValueC2))
-            {
-                goto returningFalse;
+                char r2ValueC1[1];
+                recv(client_socket, &r2ValueC1, sizeof(r2ValueC1), 0);
+
+                int found = -1;
+                for (int i = 0; i < strlen(r2ValueS1); i++)
+                {
+                    if (r2ValueC1[0] == r2ValueS1[i])
+                    {
+                        found = i;
+                        found++;
+                        break;
+                    }
+                }
+                string indexSend1 = to_string(found);
+                int j = 0;
+                char indexSend2[indexSend1.length() + 1];
+                for (; j < indexSend1.length(); j++)
+                {
+                    indexSend2[j] = indexSend1[j];
+                }
+                indexSend2[j] = '\0';
+                send(client_socket, indexSend2, sizeof(indexSend2), 0);
             }
-            for (int i = 0; i < strlen(r3ValueC1); i++)
+            else if (recieve_choiceS == "3")
             {
-                if (r3ValueC1[i] != r3ValueC2[i])
+                char r3ValueC1[200];
+                recv(client_socket, &r3ValueC1, sizeof(r3ValueC1), 0);
+                char r3ValueC2[200];
+                recv(client_socket, &r3ValueC2, sizeof(r3ValueC2), 0);
+                string valueIsTrue = "True";
+                int k = 0;
+                char cValueIsTrue[valueIsTrue.length() + 1];
+
+                string valueIsFalse = "False";
+                int l = 0;
+                char cValueIsFalse[valueIsFalse.length() + 1];
+                if (strlen(r3ValueC1) != strlen(r3ValueC2))
                 {
                     goto returningFalse;
                 }
-            }
-            for (; k < valueIsTrue.length(); k++)
-            {
-                cValueIsTrue[k] = valueIsTrue[k];
-            }
-            cValueIsTrue[k] = '\0';
-            send(client_socket, cValueIsTrue, sizeof(cValueIsTrue), 0);
-            goto end;
-
-        returningFalse:
-            for (; l < valueIsFalse.length(); l++)
-            {
-                cValueIsFalse[l] = valueIsFalse[l];
-            }
-            cValueIsFalse[l] = '\0';
-            send(client_socket, cValueIsFalse, sizeof(cValueIsFalse), 0);
-        end:
-            cout << "";
-        }
-        else if (recieve_choiceS == "4")
-        {
-            char r4ValueC1[200];
-            recv(client_socket, &r4ValueC1, sizeof(r4ValueC1), 0);
-
-            string valueIsTrue = "True";
-            int k = 0;
-            char cValueIsTrue[valueIsTrue.length() + 1];
-
-            string valueIsFalse = "False";
-            int l = 0;
-            char cValueIsFalse[valueIsFalse.length() + 1];
-
-            int z = strlen(r4ValueC1) - 1;
-            for (int i = 0; i < strlen(r4ValueC1) / 2; i++)
-            {
-                if (r4ValueC1[i] != r4ValueC1[z])
+                for (int i = 0; i < strlen(r3ValueC1); i++)
                 {
-                    goto returningFalse1;
+                    if (r3ValueC1[i] != r3ValueC2[i])
+                    {
+                        goto returningFalse;
+                    }
                 }
-                z--;
-            }
-            for (; k < valueIsTrue.length(); k++)
-            {
-                cValueIsTrue[k] = valueIsTrue[k];
-            }
-            cValueIsTrue[k] = '\0';
-            send(client_socket, cValueIsTrue, sizeof(cValueIsTrue), 0);
-            goto end1;
+                for (; k < valueIsTrue.length(); k++)
+                {
+                    cValueIsTrue[k] = valueIsTrue[k];
+                }
+                cValueIsTrue[k] = '\0';
+                send(client_socket, cValueIsTrue, sizeof(cValueIsTrue), 0);
+                goto end;
 
-        returningFalse1:
-            for (; l < valueIsFalse.length(); l++)
-            {
-                cValueIsFalse[l] = valueIsFalse[l];
+            returningFalse:
+                for (; l < valueIsFalse.length(); l++)
+                {
+                    cValueIsFalse[l] = valueIsFalse[l];
+                }
+                cValueIsFalse[l] = '\0';
+                send(client_socket, cValueIsFalse, sizeof(cValueIsFalse), 0);
+            end:
+                cout << "";
             }
-            cValueIsFalse[l] = '\0';
-            send(client_socket, cValueIsFalse, sizeof(cValueIsFalse), 0);
-        end1:
-            cout << "";
-        }
-        else if  (recieve_choiceS == "5")
-        {
-            char r5ValueC1[200];
-            recv(client_socket, &r5ValueC1, sizeof(r5ValueC1), 0);
-            char r5ValueC2[200];
-            recv(client_socket, &r5ValueC2, sizeof(r5ValueC2), 0);
+            else if (recieve_choiceS == "4")
+            {
+                char r4ValueC1[200];
+                recv(client_socket, &r4ValueC1, sizeof(r4ValueC1), 0);
 
-            string num1S;
-            for (int y = 0 ; y < strlen(r5ValueC1) ; y++)
-            {
-                num1S += r5ValueC1[y];
+                string valueIsTrue = "True";
+                int k = 0;
+                char cValueIsTrue[valueIsTrue.length() + 1];
+
+                string valueIsFalse = "False";
+                int l = 0;
+                char cValueIsFalse[valueIsFalse.length() + 1];
+
+                int z = strlen(r4ValueC1) - 1;
+                for (int i = 0; i < strlen(r4ValueC1) / 2; i++)
+                {
+                    if (r4ValueC1[i] != r4ValueC1[z])
+                    {
+                        goto returningFalse1;
+                    }
+                    z--;
+                }
+                for (; k < valueIsTrue.length(); k++)
+                {
+                    cValueIsTrue[k] = valueIsTrue[k];
+                }
+                cValueIsTrue[k] = '\0';
+                send(client_socket, cValueIsTrue, sizeof(cValueIsTrue), 0);
+                goto end1;
+
+            returningFalse1:
+                for (; l < valueIsFalse.length(); l++)
+                {
+                    cValueIsFalse[l] = valueIsFalse[l];
+                }
+                cValueIsFalse[l] = '\0';
+                send(client_socket, cValueIsFalse, sizeof(cValueIsFalse), 0);
+            end1:
+                cout << "";
             }
-            string num2S;
-            for (int y = 0 ; y < strlen(r5ValueC2) ; y++)
+            else if (recieve_choiceS == "5")
             {
-                num2S += r5ValueC2[y];
+                char r5ValueC1[200];
+                recv(client_socket, &r5ValueC1, sizeof(r5ValueC1), 0);
+                char r5ValueC2[200];
+                recv(client_socket, &r5ValueC2, sizeof(r5ValueC2), 0);
+
+                string num1S;
+                for (int y = 0; y < strlen(r5ValueC1); y++)
+                {
+                    num1S += r5ValueC1[y];
+                }
+                string num2S;
+                for (int y = 0; y < strlen(r5ValueC2); y++)
+                {
+                    num2S += r5ValueC2[y];
+                }
+                int num1I = convertToInteger(num1S);
+                int num2I = convertToInteger(num2S);
+                int totalSumI = num1I + num2I;
+                string totalSumS = convertToString(totalSumI);
+                char totalSumC[totalSumS.length() + 1];
+                int f = 0;
+                for (; f < totalSumS.length(); f++)
+                {
+                    totalSumC[f] = totalSumS[f];
+                }
+                totalSumC[f] = '\0';
+                send(client_socket, totalSumC, sizeof(totalSumC), 0);
             }
-            int num1I = convertToInteger(num1S);
-            int num2I = convertToInteger(num2S);
-            int totalSumI = num1I + num2I;
-            string totalSumS = convertToString(totalSumI);
-            char totalSumC[totalSumS.length() + 1];
-            int f = 0;
-            for ( ; f < totalSumS.length() ; f++)
-            {
-                totalSumC[f] = totalSumS[f];
-            }
-            totalSumC[f] = '\0';
-            send(client_socket, totalSumC, sizeof(totalSumC), 0);
         }
     }
 
