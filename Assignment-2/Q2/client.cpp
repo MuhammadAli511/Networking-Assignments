@@ -37,7 +37,7 @@ int main() {
     char sending_choiceC[1];
     sending_choiceC[0] = char(choice_SendingI) + 48;
     send(sock, sending_choiceC, sizeof(sending_choiceC), 0);
-    string sending_choiceS;
+    string sending_choiceS = "";
     for (int i = 0 ; i < 1 ; i++)
     {
         sending_choiceS += sending_choiceC[i];
@@ -45,6 +45,7 @@ int main() {
     
     if (sending_choiceS == "1")
     {
+        cout << "\n";
         string valueS1;
         cout << "Enter 1st string for concatenation : " ;
         cin.ignore();
@@ -78,6 +79,7 @@ int main() {
     }
     else if (sending_choiceS == "2")
     {
+        cout << "\n";
         string value2S1;
         cout << "Enter 1st string for character searching : " ;
         cin.ignore();
@@ -101,18 +103,94 @@ int main() {
         recv(sock, &recieveIndex1, sizeof(recieveIndex1), 0);
         cout << recieveIndex1 ;
     }
-    /*else if (sending_choiceS == "3")
+    else if (sending_choiceS == "3")
     {
-        
+        cout << "\n";
+        string value3S1;
+        cout << "Enter 1st string for comparison : " ;
+        cin.ignore();
+        getline(cin,value3S1);
+        char value3C1[value3S1.length()+1];
+        int i = 0;
+        for(; i < value3S1.length() ; i++)
+        {
+            value3C1[i] = tolower(value3S1[i]);
+        }
+        value3C1[i] = '\0';
+        send(sock, value3C1, sizeof(value3C1), 0);
+
+        cout << "Enter 2nd string for comparison : " ;
+        string value3S2;
+        getline(cin,value3S2);
+        char value3C2[value3S2.length()+1];
+        i = 0;
+        for(; i < value3S2.length() ; i++)
+        {
+            value3C2[i] = tolower(value3S2[i]);
+        }
+        value3C2[i] = '\0';
+        send(sock, value3C2, sizeof(value3C2), 0);
+
+        cout << "Both strings are equal : ";
+        char condition[10];
+        recv(sock, &condition, sizeof(condition), 0);
+        cout << condition ;
+
     }
     else if (sending_choiceS == "4")
     {
-        
+        cout << "\n";
+        string value3S1;
+        cout << "Enter 1st string for checking palindrome: " ;
+        cin.ignore();
+        getline(cin,value3S1);
+        char value3C1[value3S1.length()+1];
+        int i = 0;
+        for(; i < value3S1.length() ; i++)
+        {
+            value3C1[i] = tolower(value3S1[i]);
+        }
+        value3C1[i] = '\0';
+        send(sock, value3C1, sizeof(value3C1), 0);
+
+        cout << "Given string is palindrome : ";
+        char condition[10];
+        recv(sock, &condition, sizeof(condition), 0);
+        cout << condition ;
     }
     else if (sending_choiceS == "5")
     {
-        
-    }*/
+        cout << "\n";
+        string value5S1;
+        cout << "Enter 1st number in letters : " ;
+        cin.ignore();
+        getline(cin,value5S1);
+        char value5C1[value5S1.length()+1];
+        int i = 0;
+        for(; i < value5S1.length() ; i++)
+        {
+            value5C1[i] = tolower(value5S1[i]);
+        }
+        value5C1[i] = '\0';
+        send(sock, value5C1, sizeof(value5C1), 0);
+
+        cout << "Enter 2nd number in letters : " ;
+        string value5S2;
+        getline(cin,value5S2);
+        char value5C2[value5S2.length()+1];
+        i = 0;
+        for(; i < value5S2.length() ; i++)
+        {
+            value5C2[i] = tolower(value5S2[i]);
+        }
+        value5C2[i] = '\0';
+        send(sock, value5C2, sizeof(value5C2), 0);
+
+        cout << "Sum = ";
+        char recieveSum[100];
+        recv(sock, &recieveSum, sizeof(recieveSum), 0);
+        cout << recieveSum ;
+    }
 
 
 
