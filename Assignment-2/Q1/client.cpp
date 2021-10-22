@@ -48,6 +48,11 @@ int main()
 
 	if (task_Assigned[0] == '1')
 	{
+		char waitingForSignal[MAXLINE];
+		val2 = recvfrom(sockfd, (char *)waitingForSignal, MAXLINE, 0, (struct sockaddr *)&cliaddr, &val1);
+		waitingForSignal[val2] = '\0';
+
+
 		string card_No_User;
 		cout << "Enter your card no. : ";
 		getline(cin, card_No_User);

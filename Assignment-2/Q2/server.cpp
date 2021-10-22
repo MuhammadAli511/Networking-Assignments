@@ -194,8 +194,9 @@ int main()
     bind(server_socket, (struct sockaddr *)&server_address, sizeof(server_address));
     listen(server_socket, 5);
     int client_socket;
+    int client_Count = 0;
 
-    while (1)
+    while (client_Count != 5)
     {
         client_socket = accept(server_socket, NULL, NULL);
         pid_t pid1 = fork();
@@ -377,6 +378,7 @@ int main()
                 send(client_socket, totalSumC, sizeof(totalSumC), 0);
             }
         }
+        client_Count++;
     }
 
     exit(server_socket);
