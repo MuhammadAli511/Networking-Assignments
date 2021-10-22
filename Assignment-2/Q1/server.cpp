@@ -15,6 +15,8 @@ using namespace std;
 #define PORT 8080
 #define MAXLINE 1024
 
+int current_Amount;
+
 int main()
 {
 	int sockfd;
@@ -95,17 +97,7 @@ int main()
 			sendto(sockfd, (const char *)send_RandomC, strlen(send_RandomC),0, (const struct sockaddr *) &cliaddr[index_cliaddr],val1[index_cliaddr]);
 			index_cliaddr++;
 		}
-		// For card input
-		string card_No_User;
-		cout << "Enter your card no. : ";
-		getline(cin, card_No_User);
-		char card_No_UserC[card_No_User.length() + 1];
-		int n = 0;
-		for (; n < card_No_User.length() ; n++)
-		{
-			card_No_UserC[n] = card_No_User[n];
-		}
-		card_No_UserC[n] = '\0';
+		// For finding client 1
 		int temp_VarSend;
 		for (int q = 0 ; q < 3 ; q++)
 		{
@@ -114,15 +106,12 @@ int main()
 				temp_VarSend = q;
 			}
 		}
-		sendto(sockfd, (const char *)card_No_UserC, strlen(card_No_UserC),0, (const struct sockaddr *) &cliaddr[temp_VarSend],val1[temp_VarSend]);
-	
-
-
+		// Client 1 end status
 		char client1_EndStatus[100];
 		val2 = recvfrom(sockfd, (char *)client1_EndStatus, MAXLINE, 0, (struct sockaddr *)&cliaddr[temp_VarSend], &val1[temp_VarSend]);
 		
 		
-		// For pin input
+		// For finding client 2
 		int temp_VarSend1;
 		for (int q = 0 ; q < 3 ; q++)
 		{
@@ -132,9 +121,8 @@ int main()
 			}
 		}
 
+		// CLient 2 start status
 		string stat1 = "Client2Start";
-		stat1 += ":";
-		stat1 += card_No_UserC;
 		char client2_StartStatus[stat1.length() + 1];
 		int p = 0;
 		for ( ; p < stat1.length() ; p++)
@@ -144,33 +132,75 @@ int main()
 		client2_StartStatus[p] = '\0';
 		sendto(sockfd, (const char *)client2_StartStatus, strlen(client2_StartStatus),0, (const struct sockaddr *) &cliaddr[temp_VarSend1],val1[temp_VarSend1]);
 
-		string user_Pin;
-		cout << "Enter your pin number : ";
-		getline(cin,user_Pin);
-		char user_PinC[user_Pin.length() + 1 ];
-		int u = 0;
-		for (;u < user_Pin.length() ; u++)
-		{
-			user_PinC[u] = user_Pin[u];
-		}
-		user_PinC[u] = '\0';
-		sendto(sockfd, (const char *)user_PinC, strlen(user_PinC),0, (const struct sockaddr *) &cliaddr[temp_VarSend1],val1[temp_VarSend1]);
+
 	
+
+		// Client 2 end status
 		char client2_EndStatus[100];
 		val2 = recvfrom(sockfd, (char *)client2_EndStatus, MAXLINE, 0, (struct sockaddr *)&cliaddr[temp_VarSend1], &val1[temp_VarSend1]);
 	
+
+		// For finding client 3
+		int temp_VarSend2;
+		for (int q = 0 ; q < 3 ; q++)
+		{
+			if (order_Maintain[q] == 3)
+			{
+				temp_VarSend2 = q;
+			}
+		}
+
+		// CLient 3 start status
+		string stat2 = "Client3Start";
+		char client3_StartStatus[stat2.length() + 1];
+		int p1 = 0;
+		for ( ; p1 < stat2.length() ; p1++)
+		{
+			client3_StartStatus[p1] = stat2[p1];
+		}
+		client3_StartStatus[p1] = '\0';
+		sendto(sockfd, (const char *)client3_StartStatus, strlen(client3_StartStatus),0, (const struct sockaddr *) &cliaddr[temp_VarSend2],val1[temp_VarSend2]);
 	
+		srand(time(0));
+		current_Amount = (rand() % 50001);
+		int withdraw_Amount;
+		cout << "You current account have : ";
+		cout << current_Amount << endl ;
+
+		tryAgain:
+		cout << "Enter amount you want to withdraw (max: 25000): ";
+		cin >> withdraw_Amount;
+		if (withdraw_Amount > current_Amount)
+		{
+			cout << "Withdraw amount exceeds current account amount ." << endl;
+			goto tryAgain;
+		}
+		if (withdraw_Amount > 25000)
+		{
+			cout << "Withdraw amount exceeds withdrawing limit ." << endl ;
+			goto tryAgain;
+		}
+		string amount_Send;
+		amount_Send += to_string(current_Amount);
+		amount_Send += ":";
+		amount_Send += to_string(withdraw_Amount);
+		char amount_SendC[amount_Send.length() + 1];
+		int p5 = 0;
+		for (; p5 < amount_Send.length() ; p5++)
+		{
+			amount_SendC[p5] = amount_Send[p5];
+		}
+		amount_SendC[p5] = '\0';
+		sendto(sockfd, (const char *)amount_SendC, strlen(amount_SendC),0, (const struct sockaddr *) &cliaddr[temp_VarSend2],val1[temp_VarSend2]);
+
+
+		// Client 3 end status
+		char client3_EndStatus[100];
+		val2 = recvfrom(sockfd, (char *)client3_EndStatus, MAXLINE, 0, (struct sockaddr *)&cliaddr[temp_VarSend2], &val1[temp_VarSend2]);
+
+
 	//}
 
-	/*string appended_String = "Hello ";
-	char sending_String[appended_String.length() + 1];
-	int l = 0;
-	for (; l < appended_String.length(); l++)
-	{
-		sending_String[l] = appended_String[l];
-	}
-	sending_String[l] = '\0';
-	sendto(sockfd, (const char *)sending_String, strlen(sending_String), 0, (const struct sockaddr *)&cliaddr, val1);*/
-
+	
 	return 0;
 }

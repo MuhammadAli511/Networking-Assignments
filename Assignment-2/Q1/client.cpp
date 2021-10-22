@@ -14,6 +14,9 @@ using namespace std;
 #define PORT 8080
 #define MAXLINE 1024
 
+string card_NoConst = "1234-5678-90123";
+string pin_NoConst = "5678";
+
 int main()
 {
 	int sockfd;
@@ -40,36 +43,19 @@ int main()
 	task_Assigned[val2] = '\0';
 	cout << "Task No. Assigned to this terminal : " << task_Assigned << endl;
 
+
+
+
 	if (task_Assigned[0] == '1')
 	{
-		string Card_No1;
-		char card_No_RecieveC[100];
-		val2 = recvfrom(sockfd, (char *)card_No_RecieveC, 100, 0, (struct sockaddr *)&cliaddr, &val1);
-		card_No_RecieveC[val2] = '\0';
-		for (int x = 0; x < strlen(card_No_RecieveC); x++)
+		string card_No_User;
+		cout << "Enter your card no. : ";
+		getline(cin, card_No_User);
+		bool confirmationCardNo = false;
+		if (card_NoConst.compare(card_No_User) == 0)
 		{
-			Card_No1 += card_No_RecieveC[x];
+			confirmationCardNo = true;
 		}
-		//cout << "Card No. : " << card_No_RecieveC << endl;
-		string reading_CardNo;
-		ifstream readCardDb("CardDB");
-		bool confirmationCardNo = true;
-		while (getline(readCardDb, reading_CardNo))
-		{
-			for (int i = 0; i < reading_CardNo.length(); i++)
-			{
-				if (reading_CardNo[i] != card_No_RecieveC[i])
-				{
-					confirmationCardNo = false;
-					break;
-				}
-			}
-			if (confirmationCardNo == true)
-			{
-				break;
-			}
-		}
-		readCardDb.close();
 		if (confirmationCardNo == true)
 		{
 			cout << "Entered card number is correct ." << endl;
@@ -83,71 +69,25 @@ int main()
 			sendto(sockfd, (const char *)task1_SendingStatus, strlen(task1_SendingStatus), 0, (const struct sockaddr *)&servaddr, sizeof(servaddr));
 		}
 	}
+
+
+
+
+
 	if (task_Assigned[0] == '2')
 	{
 		char waitingForStatus[MAXLINE];
 		val2 = recvfrom(sockfd, (char *)waitingForStatus, MAXLINE, 0, (struct sockaddr *)&cliaddr, &val1);
 		waitingForStatus[val2] = '\0';
-		string Card_No2;
-		bool pass1 = false;
-		for (int p = 0; p < val2; p++)
-		{
-			if (waitingForStatus[p] == ':')
-			{
-				pass1 = true;
-				continue;
-			}
-			if (pass1 == true)
-			{
-				Card_No2 += waitingForStatus[p];
-			}
-		}
 
-		char pin_Recieved[100];
-		val2 = recvfrom(sockfd, (char *)pin_Recieved, 100, 0, (struct sockaddr *)&cliaddr, &val1);
-		pin_Recieved[val2] = '\0';
-		string reading_Pin;
-		ifstream readPinDb("PinDB");
-
-		bool eligible = false;
+		string user_Pin;
+		cout << "Enter your pin number : ";
+		getline(cin,user_Pin);
 		bool checkPin = false;
-		int s = 0;
-		while (getline(readPinDb, reading_Pin))
-		{
-			s=0;
-			string fileCardNo;
-			while (reading_Pin[s] != ':')
-			{
-				fileCardNo += reading_Pin[s];
-				s++;
-			}
-			if (fileCardNo.compare(Card_No2) == 0)
-			{
-				break;
-			}
-		}
-		s++;
-
-		string pin_RecievedS;
-		for (int f = 0 ; f < val2 ; f++)
-		{
-			pin_RecievedS += pin_Recieved[f];
-		}
-		string comparePin;
-		for (; s < reading_Pin.length() ; s++)
-		{
-			comparePin += reading_Pin[s];
-		}
-		if (comparePin.compare(pin_RecievedS) == 0)
+		if (pin_NoConst.compare(user_Pin) == 0)
 		{
 			checkPin = true;
 		}
-		else
-		{
-			checkPin = false;
-		}
-		
-
 		if (checkPin == false)
 		{
 			cout << "Invalid Pin" << endl;
@@ -160,6 +100,51 @@ int main()
 			char task2_SendingStatus[] = "Task 2 completed";
 			sendto(sockfd, (const char *)task2_SendingStatus, strlen(task2_SendingStatus), 0, (const struct sockaddr *)&servaddr, sizeof(servaddr));
 		}
+	}
+
+
+
+	
+
+	if (task_Assigned[0] == '3')
+	{
+		char waitingForStatus2[MAXLINE];
+		val2 = recvfrom(sockfd, (char *)waitingForStatus2, MAXLINE, 0, (struct sockaddr *)&cliaddr, &val1);
+		waitingForStatus2[val2] = '\0';
+
+
+		char all_Amount[MAXLINE];
+		val2 = recvfrom(sockfd, (char *)all_Amount, MAXLINE, 0, (struct sockaddr *)&cliaddr, &val1);
+		all_Amount[val2] = '\0';
+		
+		bool first = false;
+		string current_AmountS;
+		string withdraw_AmountS;
+		for (int p6 = 0 ; p6 < val2 ; p6++)
+		{
+			if (all_Amount[p6] == ':')
+			{
+				first = true;
+				continue;
+			}
+			if (first == false)
+			{
+				current_AmountS += all_Amount[p6];
+			}
+			else if (first = true)
+			{
+				withdraw_AmountS += all_Amount[p6];
+			}
+		}
+		int current_Amount = stoi(current_AmountS);
+		int withdraw_Amount = stoi(withdraw_AmountS);
+		current_Amount = current_Amount - withdraw_Amount;
+		cout << "Withdraw Amount : " << withdraw_Amount << endl ;
+		cout << "Updated Account Balance : " << current_Amount << endl ;
+
+		char task3_SendingStatus[] = "Task 3 completed";
+		sendto(sockfd, (const char *)task3_SendingStatus, strlen(task3_SendingStatus), 0, (const struct sockaddr *)&servaddr, sizeof(servaddr));
+
 	}
 
 	exit(sockfd);
