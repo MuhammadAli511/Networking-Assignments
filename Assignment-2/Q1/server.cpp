@@ -110,6 +110,11 @@ int main()
 		char client1_EndStatus[100];
 		val2 = recvfrom(sockfd, (char *)client1_EndStatus, MAXLINE, 0, (struct sockaddr *)&cliaddr[temp_VarSend], &val1[temp_VarSend]);
 		
+		// Client 1 task status + IP Address
+		cout << "Card verification completed by Client 1 ." << endl ;
+		cout << "IP Address : " << inet_ntoa(cliaddr[temp_VarSend].sin_addr) << endl << endl;
+
+
 		
 		// For finding client 2
 		int temp_VarSend1;
@@ -139,6 +144,10 @@ int main()
 		char client2_EndStatus[100];
 		val2 = recvfrom(sockfd, (char *)client2_EndStatus, MAXLINE, 0, (struct sockaddr *)&cliaddr[temp_VarSend1], &val1[temp_VarSend1]);
 	
+		// Client 2 task status + IP Address
+		cout << "Pin verification completed by Client 2 ." << endl ;
+		cout << "IP Address : " << inet_ntoa(cliaddr[temp_VarSend1].sin_addr) << endl << endl;
+
 
 		// For finding client 3
 		int temp_VarSend2;
@@ -197,6 +206,10 @@ int main()
 		// Client 3 end status
 		char client3_EndStatus[100];
 		val2 = recvfrom(sockfd, (char *)client3_EndStatus, MAXLINE, 0, (struct sockaddr *)&cliaddr[temp_VarSend2], &val1[temp_VarSend2]);
+
+		// Client 3 task status + IP Address
+		cout << "Withdrawl completed by Client 3 ." << endl ;
+		cout << "IP Address : " << inet_ntoa(cliaddr[temp_VarSend2].sin_addr) << endl << endl;
 
 
 	//}

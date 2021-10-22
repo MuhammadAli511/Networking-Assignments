@@ -20,7 +20,7 @@ string pin_NoConst = "5678";
 int main()
 {
 	int sockfd;
-	struct sockaddr_in servaddr, cliaddr[2];
+	struct sockaddr_in servaddr, cliaddr;
 	if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 	{
 		perror("socket creation failed");
